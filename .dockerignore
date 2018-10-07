@@ -1,0 +1,5 @@
+*
+!docker/Dockerfile
+!docker/scripts/run.sh
+!.travis/docker_push.sh
+!.travis.yml
