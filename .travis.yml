@@ -1,0 +1,18 @@
+sudo: required
+
+language: bash
+
+env:
+  - MLFLOW_VERSION=0.7.0
+
+services:
+  - docker
+
+script:
+  - .travis/docker_script.sh
+
+deploy:
+  provider: script
+  script: bash .travis/docker_push.sh
+  on:
+    all_branches: true
