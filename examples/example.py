@@ -1,6 +1,7 @@
 from mlflow import log_metric, log_param, log_artifact
 
 if __name__ == "__main__":
+    print('Running')
     # Log a parameter (key-value pair)
     log_param("param1", 5)
 
@@ -9,7 +10,7 @@ if __name__ == "__main__":
     log_metric("foo", 2)
     log_metric("foo", 3)
 
-    # Log an artifact (output file)
-    with open("output.txt", "w") as f:
-        f.write("Hello world!")
-    log_artifact("output.txt")
+    # # Log an artifact (output file)
+    # with open("output.txt", "w") as f:
+    #     f.write("Hello world!")
+    # log_artifact("output.txt")

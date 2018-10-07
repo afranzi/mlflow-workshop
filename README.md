@@ -15,9 +15,6 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
-
-
 # Tracking API
 ***Docs:** [MLflow // docs // Tracking](https://mlflow.org/docs/latest/tracking.html)*
 
@@ -47,6 +44,12 @@ It's possible to define the following variables:
 * SERVER_HOST (`0.0.0.0`)
 * FILE_STORE (`${MLFLOW_HOME}/fileStore`)
 * ARTIFACT_STORE (`${MLFLOW_HOME}/artifactStore`)
+
+# Run trainings
+Since we have our MLflow Tracking docker exposed at 5000, we can log executions by setting the env variable `MLFLOW_TRACKING_URI`. 
+```
+MLFLOW_TRACKING_URI=http://localhost:5000 python example.py
+```
 
 # Notes
 
