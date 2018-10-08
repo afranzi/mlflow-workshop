@@ -28,6 +28,7 @@ mlflow server \
     --file-store /tmp/mlflow/fileStore \
     --default-artifact-root /tmp/mlflow/artifacts/ \
     --host localhost
+    --port 5000
 ```
 
 > Launch MLFlow Tracking Docker
@@ -45,11 +46,30 @@ It's possible to define the following variables:
 * FILE_STORE (`${MLFLOW_HOME}/fileStore`)
 * ARTIFACT_STORE (`${MLFLOW_HOME}/artifactStore`)
 
+> ⚠️**NOTE** Since clients needs to have access to the final path, it would be better to use a remote store, since we would need to have direct access to the fileStore directory.
+
 # Run trainings
 Since we have our MLflow Tracking docker exposed at 5000, we can log executions by setting the env variable `MLFLOW_TRACKING_URI`. 
 ```
 MLFLOW_TRACKING_URI=http://localhost:5000 python example.py
 ```
+
+# Serving models
+***Ref:** [Saving and serving models](https://mlflow.org/docs/latest/quickstart.html#saving-and-serving-models)*
+
+```
+MLFLOW_TRACKING_URI=http://0.0.0.0:5000 mlflow sklearn serve \
+    --port 5005 \
+    -r 3e86bf0f27a347c59f0735aa92510a69 \
+    -m model
+```
+
+> i.e: Query Wine Quality model prediction 
+```
+curl -X POST -H "Content-Type:application/json" \
+    --data '[{"fixed acidity": 3.42, "volatile acidity": 1.66, "citric acid": 0.48, "residual sugar": 4.2, "chlorides": 0.229, "free sulfur dioxide": 39, "total sulfur dioxide": 55, "density": 1.98, "pH": 5.33, "sulphates": 4.39, "alcohol": 20.8}]' http://127.0.0.1:5005/invocations
+```
+
 
 # Notes
 
