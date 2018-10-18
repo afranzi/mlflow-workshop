@@ -1,6 +1,5 @@
 # The data set used in this example is from http://archive.ics.uci.edu/ml/datasets/Wine+Quality
 import argparse
-import os
 import warnings
 
 import mlflow
@@ -47,33 +46,37 @@ def main(args=None):
     train_y = train[["quality"]]
     test_y = test[["quality"]]
 
-    alpha = args.alpha
-    l1_ratio = args.l1_ratio
+    for alpha in np.linspace(0, 1, 9):
+        for l1_ratio in np.linspace(0.5, 0.5, 1):
+            print(alpha, l1_ratio)
 
-    with mlflow.start_run():
-        lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
-        lr.fit(train_x, train_y)
+            alpha = round(alpha, 2)
+            l1_ratio = round(l1_ratio, 2)
 
-        predicted_qualities = lr.predict(test_x)
+            with mlflow.start_run():
+                lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
+                lr.fit(train_x, train_y)
 
-        (rmse, mae, r2) = eval_metrics(test_y, predicted_qualities)
+                predicted_qualities = lr.predict(test_x)
 
-        print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
-        print("  RMSE: %s" % rmse)
-        print("  MAE: %s" % mae)
-        print("  R2: %s" % r2)
+                (rmse, mae, r2) = eval_metrics(test_y, predicted_qualities)
 
-        mlflow.log_param("source", wine_path)
-        mlflow.log_param("alpha", alpha)
-        mlflow.log_param("l1_ratio", l1_ratio)
+                print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
+                print("  RMSE: %s" % rmse)
+                print("  MAE: %s" % mae)
+                print("  R2: %s" % r2)
 
-        mlflow.log_metric("rmse", rmse)
-        mlflow.log_metric("r2", r2)
-        mlflow.log_metric("mae", mae)
+                mlflow.log_param("source", wine_path)
+                mlflow.log_param("alpha", alpha)
+                mlflow.log_param("l1_ratio", l1_ratio)
 
-        mlflow.set_tag('domain', 'wine')
-        mlflow.set_tag('predict', 'quality')
-        mlflow.sklearn.log_model(lr, "model")
+                mlflow.log_metric("rmse", rmse)
+                mlflow.log_metric("r2", r2)
+                mlflow.log_metric("mae", mae)
+
+                mlflow.set_tag('domain', 'wine')
+                mlflow.set_tag('predict', 'quality')
+                mlflow.sklearn.log_model(lr, "model")
 
 
 if __name__ == "__main__":

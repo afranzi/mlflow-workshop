@@ -70,6 +70,26 @@ curl -X POST -H "Content-Type:application/json" \
     --data '[{"fixed acidity": 3.42, "volatile acidity": 1.66, "citric acid": 0.48, "residual sugar": 4.2, "chlorides": 0.229, "free sulfur dioxide": 39, "total sulfur dioxide": 55, "density": 1.98, "pH": 5.33, "sulphates": 4.39, "alcohol": 20.8}]' http://127.0.0.1:5005/invocations
 ```
 
+# Run model from Spark
+
+> pyspark
+```
+import mlflow.pyfunc
+wine_udf = mlflow.pyfunc.spark_udf(spark, '/tmp/mlflow/artifacts/0/b0dfd62600ac4289a7b1bc058c528aad/artifacts/model/')
+df = spark.read.format("csv").option("header", "true").option('delimiter', ';').load('/Users/yc00096/Projects/mlflow-workshop/examples/wine_quality/data/winequality-red.csv')
+df.withColumn("prediction", wine_udf('fixed acidity','volatile acidity','citric acid','residual sugar','chlorides','free sulfur dioxide','total sulfur dioxide','density','pH','sulphates','alcohol')).show(10, False)
+```
+
+
+# Jupyter
+
+```
+export SPARK_HOME=~/spark
+export PYSPARK_DRIVER_PYTHON=jupyter
+export PYSPARK_DRIVER_PYTHON_OPTS='notebook  --notebook-dir=/Users/yc00096/Projects/notebooks'
+```
+
+
 
 # Notes
 
